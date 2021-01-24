@@ -6,13 +6,68 @@ provider:
   runtime: java8
   region: eu-west-2
   profile: serverless
+
+  environment:
+   DB_HOST: ${file(./config.dev.json):DB_HOST}
+   DB_NAME: ${file(./config.dev.json):DB_NAME}
+   DB_USER: ${file(./config.dev.json):DB_USER}
+   DB_PASSWORD: ${file(./config.dev.json):DB_PASSWORD}
+    
 package:
-  artifact: target/hello-dev.jar
+  artifact: target/more-clean-water-dev.jar
 functions:
-  tasks-api:
-    handler: com.serverless.Handler
-    events:
+  tasks-api:  
+    handler: com.techreturners.mcw.handler.Handler # Reference to class handler
+    events: # All events associated with this function
       - http:
-         path: tasks
-         method: get
+          path: tasks/getall
+          method: get
+      - http:
+          path: tasks/create
+          method: post
+      - http:
+          path: tasks/update/{userid}
+          method: put
+          request:
+            parameters:
+              paths:
+                userid: true
+      - http:
+          path: tasks/delete/{delid}
+          method: delete
+          request:
+            parameters:
+              paths:
+                delid: true
+  users-list-api: 
+    handler: com.techreturners.mcw.handler.UserListHandler # Reference to class handler
+    events: # Get the user list
+      - http:
+          path: /users/list
+          method: get
+  users-get-api:
+    handler: com.techreturners.mcw.handler.UserInfoHandler # Reference to class handler
+    events: # Get the specific user details
+      - http:
+          path: /users/{userid}
+          method: get
+  users-add-api:
+    handler: com.techreturners.mcw.handler.UserAddHandler # Reference to class handler
+    events: # Create user
+      - http:
+          path: /users/add
+          method: post
+  users-edit-api:
+    handler: com.techreturners.mcw.handler.UserEditHandler # Reference to class handler
+    events: # Update user
+      - http:
+          path: /users/edit/{userid}
+          method: put
+  users-deactivate-api:
+    handler: com.techreturners.mcw.handler.UserDeleteHandler # Reference to class handler
+    events: # Deactivate user
+      - http:
+          path: /users/delete/{userid}
+          method: get
+   
 
