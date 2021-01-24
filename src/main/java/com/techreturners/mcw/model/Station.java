@@ -10,8 +10,8 @@ public class Station {
 	private String capacity;
 	private Date  installation_date;
 	private Boolean is_working;
+	
 	public Station() {}
-
 	
 	public Station(Long station_id, Integer postcode_id, Integer size, String capacity, Date installation_date,
 			Boolean is_working) {

@@ -100,3 +100,22 @@ functions:
           path: /stations/delete/{station_id}
           method: get
 
+# APIs for Awareness Management Module
+  sections-list-api: 
+    handler: com.techreturners.mcw.handler.SectionListHandler # Reference to class handler
+    events: # Get the user list
+      - http:
+          path: /sections/list
+          method: get
+  sections-add-api:
+    handler: com.techreturners.mcw.handler.SectionAddHandler # Reference to class handler
+    events: # Create user
+      - http:
+          path: /sections/add
+          method: post
+  sections-disable-api:
+    handler: com.techreturners.mcw.handler.SectionDeleteHandler # Reference to class handler
+    events: # Deactivate user
+      - http:
+          path: /sections/delete/{section_id}
+          method: delete
