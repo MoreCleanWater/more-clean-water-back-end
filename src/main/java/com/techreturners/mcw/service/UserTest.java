@@ -1,4 +1,4 @@
-package com.techreturners.mcw;
+package com.techreturners.mcw.service;
 
 public class UserTest {
 

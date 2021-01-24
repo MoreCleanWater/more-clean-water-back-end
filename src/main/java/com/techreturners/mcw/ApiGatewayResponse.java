@@ -4,13 +4,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/*For Learning Purpose*/
 public class ApiGatewayResponse {
 
 	private final int statusCode;
@@ -78,8 +77,8 @@ public class ApiGatewayResponse {
 		}
 
 		/**
-		 * Builds the {@link ApiGatewayResponse} using the passed object body
-		 * converted to JSON.
+		 * Builds the {@link ApiGatewayResponse} using the passed object body converted
+		 * to JSON.
 		 */
 		public Builder setObjectBody(Object objectBody) {
 			this.objectBody = objectBody;
@@ -87,9 +86,9 @@ public class ApiGatewayResponse {
 		}
 
 		/**
-		 * Builds the {@link ApiGatewayResponse} using the passed binary body
-		 * encoded as base64. {@link #setBase64Encoded(boolean)
-		 * setBase64Encoded(true)} will be in invoked automatically.
+		 * Builds the {@link ApiGatewayResponse} using the passed binary body encoded as
+		 * base64. {@link #setBase64Encoded(boolean) setBase64Encoded(true)} will be in
+		 * invoked automatically.
 		 */
 		public Builder setBinaryBody(byte[] binaryBody) {
 			this.binaryBody = binaryBody;
@@ -101,8 +100,7 @@ public class ApiGatewayResponse {
 		 * A binary or rather a base64encoded responses requires
 		 * <ol>
 		 * <li>"Binary Media Types" to be configured in API Gateway
-		 * <li>a request with an "Accept" header set to one of the "Binary Media
-		 * Types"
+		 * <li>a request with an "Accept" header set to one of the "Binary Media Types"
 		 * </ol>
 		 */
 		public Builder setBase64Encoded(boolean base64Encoded) {

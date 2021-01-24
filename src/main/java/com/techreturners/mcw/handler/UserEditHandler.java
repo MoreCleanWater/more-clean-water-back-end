@@ -13,6 +13,7 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.techreturners.mcw.learning.Handler;
 import com.techreturners.mcw.model.User;
 
 public class UserEditHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
@@ -36,14 +37,14 @@ public class UserEditHandler implements RequestHandler<APIGatewayProxyRequestEve
 			connection = DriverManager
 					.getConnection(String.format("jdbc:mysql://%s/%s?user=%s&password=%s", System.getenv("DB_HOST"),
 							System.getenv("DB_NAME"), System.getenv("DB_USER"), System.getenv("DB_PASSWORD")));
-		    String query = "update user set first_name = ?, last_name = ?, email = ? where user_id = ?";
-            statement = connection.prepareStatement(query);
-			
+			String query = "update user set first_name = ?, last_name = ?, email = ? where user_id = ?";
+			statement = connection.prepareStatement(query);
+
 			statement.setString(1, user.getFirst_name());
 			statement.setString(2, user.getLast_name());
 			statement.setString(3, user.getEmail());
 			statement.setString(4, userid);
-            statement.executeUpdate();
+			statement.executeUpdate();
 			response.setStatusCode(200);
 
 			LOG.debug("updating user = " + user.getFirst_name());
@@ -53,14 +54,12 @@ public class UserEditHandler implements RequestHandler<APIGatewayProxyRequestEve
 
 		} catch (Exception e) {
 			LOG.error("Unable to open database connection in Update User", e);
-
-			// LOG.error(String.format("unable to get query databse for users list %s",
-			// userid), e);
 		} finally {
 			closeConnection();
 		}
 		return response;
 	}
+
 	private void closeConnection() {
 		try {
 			if (resultset != null) {

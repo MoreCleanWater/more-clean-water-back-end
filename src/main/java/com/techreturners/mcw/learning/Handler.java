@@ -1,4 +1,4 @@
-package com.techreturners.mcw.handler;
+package com.techreturners.mcw.learning;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,10 +12,12 @@ import org.json.simple.JSONObject;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.techreturners.mcw.ApiGatewayResponse;
-import com.techreturners.mcw.UserService;
-import com.techreturners.mcw.UserServiceMapImpl;
-import com.techreturners.mcw.UserTest;
 import com.techreturners.mcw.model.Task;
+import com.techreturners.mcw.service.UserService;
+import com.techreturners.mcw.service.UserServiceMapImpl;
+import com.techreturners.mcw.service.UserTest;
+
+/* Test Class for learning the architecture */
 
 public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayResponse> {
 
@@ -36,10 +38,8 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 		String path = object.get("path").toString();
 
 		if (path.equals("/tasks/getall")) {
-
 			LOG.info("EVENT path is getall : " + path);
 			LOG.info("size : " + userService.getUsers().size());
-
 			/*
 			 * Iterator<UserTest> iterator = userService.getUsers().iterator(); while
 			 * (iterator.hasNext()) { LOG.info("value= " + iterator.next().getFirstName());
@@ -51,18 +51,11 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 		if (path.equals("/tasks/create")) {
 			LOG.info("EVENT path is crate : " + path);
 			String body = object.get("body").toString();
-
-			// LOG.info("event : " + gson.toJson(input));
-			// LOG.info("input string : " + gson.toJson(input));
-
 			UserTest user = new Gson().fromJson(body, UserTest.class);
-			// LOG.info("Add user : " +user);
-
 			userService.addUser(user);
 			return ApiGatewayResponse.builder().setStatusCode(200).setObjectBody(user)
 					.setHeaders(Collections.singletonMap("X-Powered-By", "AWS Lambda & serverless")).build();
 		} else {
-			// LOG.info("EVENT path is else: " + path);
 			String parameter = object.get("pathParameters").toString();
 			parameter = parameter.replaceAll("\\p{P}", "");
 
@@ -74,13 +67,6 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 			return ApiGatewayResponse.builder().setStatusCode(200).setObjectBody(tasks)
 					.setHeaders(Collections.singletonMap("X-Powered-By", "AWS Lambda & serverless")).build();
 		}
-		// String lastName = object.getString("lastName");
-
-		// String s=gson.toJson(input);
-		// System.out.println("event= "+s);
-		// System.out.println("event= "+gson.toJson(input));
-		// LOG.info("EVENT TYPE: " + input.getClass().toString());
-
 	}
 
 }

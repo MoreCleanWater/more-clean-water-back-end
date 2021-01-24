@@ -12,6 +12,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
+import com.techreturners.mcw.learning.Handler;
 
 
 public class UserDeleteHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
@@ -27,14 +28,13 @@ public class UserDeleteHandler implements RequestHandler<APIGatewayProxyRequestE
 		String userid = request.getPathParameters().get("userid");
 
 		try {
-
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			connection = DriverManager
 					.getConnection(String.format("jdbc:mysql://%s/%s?user=%s&password=%s", System.getenv("DB_HOST"),
 							System.getenv("DB_NAME"), System.getenv("DB_USER"), System.getenv("DB_PASSWORD")));
-		    String query = "update user set is_remove= ? where user_id = ?";
+		    String query = "update user set is_active= ? where user_id = ?";
             statement = connection.prepareStatement(query);
-			statement.setBoolean(1, true);
+			statement.setBoolean(1, false);
 			statement.setString(2, userid);
             statement.executeUpdate();
 			response.setStatusCode(200);
@@ -43,12 +43,8 @@ public class UserDeleteHandler implements RequestHandler<APIGatewayProxyRequestE
 			LOG.info("user info=", userid);
 
 			response.setBody("User is deactivated successfully");
-
 		} catch (Exception e) {
-			LOG.error("Unable to open database connection in Update User", e);
-
-			// LOG.error(String.format("unable to get query databse for users list %s",
-			// userid), e);
+			LOG.error("Unable to open database connection in Deactivate User", e);
 		} finally {
 			closeConnection();
 		}
@@ -66,7 +62,7 @@ public class UserDeleteHandler implements RequestHandler<APIGatewayProxyRequestE
 				connection.close();
 			}
 		} catch (Exception ex) {
-			LOG.error("Unable to close database connection in User detail", ex.getMessage());
+			LOG.error("Unable to close database connection in User deactivate", ex.getMessage());
 		}
 	}
 }

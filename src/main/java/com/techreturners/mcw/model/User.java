@@ -1,7 +1,6 @@
 package com.techreturners.mcw.model;
 
 public class User {
-
 	private Long user_id;
 	private String first_name;
 	private String last_name;
@@ -9,13 +8,12 @@ public class User {
 	private String password;
 	private String salt_value;
 	private Integer postcode_id;
-	private Boolean is_admin;
-	private Boolean is_remove;
+	private Boolean is_active;
 	
 	public User() {}
 	
 	public User(Long user_id, Integer postcode_id,String first_name,String last_name, String password, String salt_value,String email,
-			Boolean is_admin, Boolean is_remove) {
+			 Boolean is_active) {
 		super();
 		this.user_id=user_id;
 		this.first_name = first_name;
@@ -24,8 +22,7 @@ public class User {
 		this.password = password;
 		this.salt_value = salt_value;
 		this.postcode_id = postcode_id;
-		this.is_admin = is_admin;
-		this.is_remove = is_remove;
+		this.is_active = is_active;
 	}
 
 	public Long getUser_id() {
@@ -84,20 +81,13 @@ public class User {
 		this.postcode_id = postcode_id;
 	}
 
-	public Boolean getIs_admin() {
-		return is_admin;
+	public Boolean getIs_active() {
+		return is_active;
 	}
 
-	public void setIs_admin(Boolean is_admin) {
-		this.is_admin = is_admin;
+	public void setIs_active(Boolean is_active) {
+		this.is_active = is_active;
 	}
 
-	public Boolean getIs_remove() {
-		return is_remove;
-	}
-
-	public void setIs_remove(Boolean is_remove) {
-		this.is_remove = is_remove;
-	}
 
 }
