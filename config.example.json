@@ -1,0 +1,7 @@
+{
+
+"DB_HOST" : "somerds",
+"DB_NAME" : "dbname",
+"DB_USER" : "somerds",
+"DB_PASSWORD" : "somerds"
+}
