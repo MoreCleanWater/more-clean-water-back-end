@@ -23,7 +23,7 @@ public class StationDisableHandler
 
 	@Override
 	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent request, Context context) {
-		String station_id = request.getPathParameters().get("station_id");
+		String station_id = request.getPathParameters().get("stationId");
 
 		try {
 			connection = DatabaseUtil.getConnection();

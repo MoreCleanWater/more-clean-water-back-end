@@ -29,7 +29,7 @@ public class UserInfoHandler implements RequestHandler<APIGatewayProxyRequestEve
 
 	@Override
 	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent request, Context context) {
-		String userid = request.getPathParameters().get("userid");
+		String userid = request.getPathParameters().get("userId");
 		List<User> users = new ArrayList<>();
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");

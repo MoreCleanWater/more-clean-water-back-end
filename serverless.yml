@@ -28,14 +28,14 @@ functions:
           path: tasks/create
           method: post
       - http:
-          path: tasks/update/{userid}
+          path: tasks/update/{userId}
           method: put
           request:
             parameters:
               paths:
                 userid: true
       - http:
-          path: tasks/delete/{delid}
+          path: tasks/delete/{delId}
           method: delete
           request:
             parameters:
@@ -53,7 +53,7 @@ functions:
     handler: com.techreturners.mcw.handler.UserInfoHandler # Reference to class handler
     events: # Get the specific user details
       - http:
-          path: /users/{userid}
+          path: /users/{userId}
           method: get
   users-add-api:
     handler: com.techreturners.mcw.handler.UserAddHandler # Reference to class handler
@@ -65,13 +65,13 @@ functions:
     handler: com.techreturners.mcw.handler.UserEditHandler # Reference to class handler
     events: # Update user
       - http:
-          path: /users/edit/{userid}
+          path: /users/edit/{userId}
           method: put
   users-deactivate-api:
     handler: com.techreturners.mcw.handler.UserDeleteHandler # Reference to class handler
     events: # Deactivate user
       - http:
-          path: /users/delete/{userid}
+          path: /users/delete/{userId}
           method: get
    
 # APIs for Station Management Module
@@ -91,13 +91,13 @@ functions:
     handler: com.techreturners.mcw.handler.StationEditHandler # Reference to class handler
     events: # Update user
       - http:
-          path: /stations/edit/{station_id}
+          path: /stations/edit/{stationId}
           method: put
   stations-disable-api:
     handler: com.techreturners.mcw.handler.StationDisableHandler # Reference to class handler
     events: # Deactivate user
       - http:
-          path: /stations/delete/{station_id}
+          path: /stations/delete/{stationId}
           method: get
 
 # APIs for Awareness Management Module
@@ -117,5 +117,5 @@ functions:
     handler: com.techreturners.mcw.handler.SectionDeleteHandler # Reference to class handler
     events: # Deactivate user
       - http:
-          path: /sections/delete/{section_id}
+          path: /sections/delete/{sectionId}
           method: delete

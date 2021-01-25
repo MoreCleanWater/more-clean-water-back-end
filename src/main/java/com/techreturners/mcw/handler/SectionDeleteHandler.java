@@ -24,7 +24,7 @@ public class SectionDeleteHandler implements RequestHandler<APIGatewayProxyReque
 
 	@Override
 	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent request, Context context) {
-		String section_id = request.getPathParameters().get("section_id");
+		String section_id = request.getPathParameters().get("sectionId");
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			connection = DriverManager

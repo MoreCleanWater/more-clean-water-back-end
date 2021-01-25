@@ -26,7 +26,7 @@ public class StationEditHandler implements RequestHandler<APIGatewayProxyRequest
 	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent request, Context context) {
 		String stationbody = request.getBody();
 		ObjectMapper stationObj = new ObjectMapper();
-		String station_id = request.getPathParameters().get("station_id");
+		String station_id = request.getPathParameters().get("stationId");
 
 		try {
 			Station station = stationObj.readValue(stationbody, Station.class);

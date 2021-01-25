@@ -28,7 +28,7 @@ public class UserEditHandler implements RequestHandler<APIGatewayProxyRequestEve
 	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent request, Context context) {
 		String userbody = request.getBody();
 		ObjectMapper userObj = new ObjectMapper();
-		String userid = request.getPathParameters().get("userid");
+		String userid = request.getPathParameters().get("userId");
 
 		try {
 			User user = userObj.readValue(userbody, User.class);

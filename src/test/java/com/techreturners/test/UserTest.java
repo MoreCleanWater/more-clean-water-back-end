@@ -12,6 +12,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 public class UserTest {
 
+	/*Needs to be implemented with more tests*/
+	
 	@Ignore	
 	@Test
 	public void givenUserDoesNotExists_whenUserInfoIsRetrieved_then404IsReceived()
