@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,7 +26,7 @@ public class SectionDeleteHandler implements RequestHandler<APIGatewayProxyReque
 
 	@Override
 	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent request, Context context) {
-		String section_id = request.getPathParameters().get("sectionId");
+		String section_id = request.getPathParameters().get("id");
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			connection = DriverManager
@@ -36,6 +38,11 @@ public class SectionDeleteHandler implements RequestHandler<APIGatewayProxyReque
 			statement.setString(1, section_id);
 			statement.executeUpdate();
 			response.setStatusCode(200);
+			Map<String, String> headers = new HashMap<>();
+	        headers.put( "Access-Control-Allow-Origin", "*");
+	        headers.put( "Access-Control-Allow-Credentials", "true" );
+
+			response.setHeaders(headers);
 			LOG.debug("saving section = ");
 			LOG.info("section info=");
 

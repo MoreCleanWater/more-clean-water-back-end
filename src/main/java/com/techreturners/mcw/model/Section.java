@@ -2,26 +2,26 @@ package com.techreturners.mcw.model;
 
 public class Section {
 
-	private Long station_id;
+	private Long id;
 	private String name;
 	private String description;
 
 	public Section() {
 	}
 
-	public Section(Long station_id,String name, String description) {
+	public Section(Long id, String name, String description) {
 		super();
-		this.station_id = station_id;
+		this.id = id;
 		this.name = name;
 		this.description = description;
 	}
 
-	public Long getStation_id() {
-		return station_id;
+	public Long getId() {
+		return id;
 	}
 
-	public void setStation_id(Long station_id) {
-		this.station_id = station_id;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getName() {

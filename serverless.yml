@@ -28,12 +28,12 @@ functions:
           path: tasks/create
           method: post
       - http:
-          path: tasks/update/{userId}
+          path: tasks/update/{user_id}
           method: put
           request:
             parameters:
               paths:
-                userid: true
+                user_id: true
       - http:
           path: tasks/delete/{delId}
           method: delete
@@ -49,32 +49,37 @@ functions:
       - http:
           path: /users/list
           method: get
+          cors: true # <-- CORS!
   users-get-api:
     handler: com.techreturners.mcw.handler.UserInfoHandler # Reference to class handler
     events: # Get the specific user details
       - http:
           path: /users/{userId}
           method: get
+          cors: true # <-- CORS!
   users-add-api:
     handler: com.techreturners.mcw.handler.UserAddHandler # Reference to class handler
     events: # Create user
       - http:
           path: /users/add
           method: post
+          cors: true # <-- CORS!
   users-edit-api:
     handler: com.techreturners.mcw.handler.UserEditHandler # Reference to class handler
     events: # Update user
       - http:
           path: /users/edit/{userId}
           method: put
+          cors: true # <-- CORS!
   users-deactivate-api:
     handler: com.techreturners.mcw.handler.UserDeleteHandler # Reference to class handler
     events: # Deactivate user
       - http:
           path: /users/delete/{userId}
           method: get
-   
-# APIs for Station Management Module
+          cors: true # <-- CORS!
+
+  # APIs for Station Management Module
   stations-list-api: 
     handler: com.techreturners.mcw.handler.StationListHandler # Reference to class handler
     events: # Get the user list
@@ -107,15 +112,28 @@ functions:
       - http:
           path: /sections/list
           method: get
+          cors: true # <-- CORS!
   sections-add-api:
     handler: com.techreturners.mcw.handler.SectionAddHandler # Reference to class handler
     events: # Create user
       - http:
           path: /sections/add
           method: post
+          cors: true # <-- CORS!
   sections-disable-api:
     handler: com.techreturners.mcw.handler.SectionDeleteHandler # Reference to class handler
     events: # Deactivate user
       - http:
-          path: /sections/delete/{sectionId}
+          path: /sections/delete/{id}
           method: delete
+          cors: true # <-- CORS!
+
+# APIs for Mics Services
+
+  county-list-api: 
+    handler: com.techreturners.mcw.handler.CountyListHandler # Reference to class handler
+    events: # Get the user list
+      - http:
+          path: /county/list
+          method: get
+          cors: true # <-- CORS!
