@@ -30,19 +30,27 @@ public class User {
 		this.isActive = isActive;
 		this.isSubscriber = isSubscriber;
 	}
-	
-	public User(Long userId,String userName, String firstName, String lastName, String email, String password,
-			 String postcode, Boolean isActive, Boolean isSubscriber) {
+
+	public User(Long userId,String userName,  String postcode,String firstName, String lastName, String email,
+			Boolean isActive, Boolean isSubscriber) {
 		super();
 		this.userId = userId;
 		this.userName = userName;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
-		this.password = password;
 		this.postcode = postcode;
 		this.isActive = isActive;
 		this.isSubscriber = isSubscriber;
+	}
+	public User(Long userId,String userName,  String password,
+			String saltValue, Boolean isActive) {
+		super();
+		this.userId = userId;
+		this.userName = userName;
+		this.password = password;
+		this.saltValue = saltValue;
+		this.isActive = isActive;
 	}
 
 	public Long getUserId() {

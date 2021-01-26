@@ -78,6 +78,13 @@ functions:
           path: /users/delete/{userId}
           method: get
           cors: true # <-- CORS!
+  login-user-api: 
+    handler: com.techreturners.mcw.handler.UserLoginHandler # Reference to class handler
+    events: # Get the user list
+      - http:
+          path: /users/login
+          method: put
+          cors: true # <-- CORS!
 
   # APIs for Station Management Module
   stations-list-api: 
@@ -136,4 +143,18 @@ functions:
       - http:
           path: /county/list
           method: get
+          cors: true # <-- CORS!
+  deactivate-user-api: 
+    handler: com.techreturners.mcw.handler.DeactivateUserHandler # Reference to class handler
+    events: # Get the user list
+      - http:
+          path: /users/deactivate/{userId}
+          method: delete
+          cors: true # <-- CORS!
+  unsubscribe-user-api: 
+    handler: com.techreturners.mcw.handler.UnsubscribeUser # Reference to class handler
+    events: # Get the user list
+      - http:
+          path: /users/unsubscribe/{userId}
+          method: put
           cors: true # <-- CORS!

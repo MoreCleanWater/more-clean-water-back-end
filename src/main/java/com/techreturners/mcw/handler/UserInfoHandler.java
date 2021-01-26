@@ -44,16 +44,14 @@ public class UserInfoHandler implements RequestHandler<APIGatewayProxyRequestEve
 
 			while (resultset.next()) {
 				User user = new User(resultset.getLong("user_id"), resultset.getString("user_name"),
-						resultset.getString("first_name"), resultset.getString("last_name"),
-						resultset.getString("password"),resultset.getString("postcode"),
-						resultset.getString("email"), resultset.getBoolean("is_active"), resultset.getBoolean("is_subscriber"));
+						resultset.getString("postcode"),resultset.getString("first_name"), resultset.getString("last_name"),
+						 resultset.getString("email"),
+						resultset.getBoolean("is_active"), resultset.getBoolean("is_subscriber"));
 				users.add(user);
 			}
 			LOG.info("end= ");
 		} catch (Exception e) {
 			LOG.error("Unable to open database connection in User detail", e);
-			// LOG.error(String.format("unable to get query databse for users list %s",
-			// userid), e);
 		} finally {
 			closeConnection();
 		}
