@@ -53,13 +53,13 @@ public class SectionListHandler  implements RequestHandler<APIGatewayProxyReques
 
 		APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
 		response.setStatusCode(200);
+		
 		Map<String, String> headers = new HashMap<>();
         headers.put( "Access-Control-Allow-Origin", "*");
         headers.put( "Access-Control-Allow-Credentials", "true" );
-
 		response.setHeaders(headers);
+		
 		ObjectMapper sectionMapper = new ObjectMapper();
-
 		try {
 			String sectionList = sectionMapper.writeValueAsString(sections);
 			response.setBody(sectionList);

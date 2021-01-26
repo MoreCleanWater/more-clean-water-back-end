@@ -38,11 +38,12 @@ public class SectionDeleteHandler implements RequestHandler<APIGatewayProxyReque
 			statement.setString(1, section_id);
 			statement.executeUpdate();
 			response.setStatusCode(200);
+			
 			Map<String, String> headers = new HashMap<>();
 	        headers.put( "Access-Control-Allow-Origin", "*");
 	        headers.put( "Access-Control-Allow-Credentials", "true" );
-
 			response.setHeaders(headers);
+			
 			LOG.debug("saving section = ");
 			LOG.info("section info=");
 

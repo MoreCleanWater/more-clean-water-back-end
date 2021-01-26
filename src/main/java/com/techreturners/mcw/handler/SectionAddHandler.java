@@ -42,11 +42,12 @@ public class SectionAddHandler implements RequestHandler<APIGatewayProxyRequestE
 			statement.setString(2, section.getDescription());
 			statement.executeUpdate();
 			response.setStatusCode(200);
+			
 			Map<String, String> headers = new HashMap<>();
 	        headers.put( "Access-Control-Allow-Origin", "*");
 	        headers.put( "Access-Control-Allow-Credentials", "true" );
-
 			response.setHeaders(headers);
+			
 			LOG.debug("saving section = " + section.getName());
 			LOG.info("section info=", section.getName());
 

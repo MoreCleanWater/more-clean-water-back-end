@@ -1,52 +1,80 @@
 package com.techreturners.mcw.model;
 
 public class User {
-	private Long user_id;
-	private String first_name;
-	private String last_name;
+	private Long userId;
+	private String userName;
+	private String firstName;
+	private String lastName;
 	private String email;
 	private String password;
-	private String salt_value;
-	private Integer postcode_id;
-	private Boolean is_active;
+	private String saltValue;
+	private Integer postcodeId;
+	private Integer countyId;
+	private String postcode;
+	private Boolean isActive;
+	private Boolean isSubscriber;
 	
 	public User() {}
-	
-	public User(Long user_id, Integer postcode_id,String first_name,String last_name, String password, String salt_value,String email,
-			 Boolean is_active) {
+
+	public User(Long userId, Integer countyId,String userName, String firstName, String lastName, String email, String password,
+			 String postcode, Boolean isActive, Boolean isSubscriber) {
 		super();
-		this.user_id=user_id;
-		this.first_name = first_name;
-		this.last_name = last_name;
+		this.userId = userId;
+		this.userName = userName;
+		this.firstName = firstName;
+		this.lastName = lastName;
 		this.email = email;
 		this.password = password;
-		this.salt_value = salt_value;
-		this.postcode_id = postcode_id;
-		this.is_active = is_active;
+		this.postcode = postcode;
+		this.countyId = countyId;
+		this.isActive = isActive;
+		this.isSubscriber = isSubscriber;
+	}
+	
+	public User(Long userId,String userName, String firstName, String lastName, String email, String password,
+			 String postcode, Boolean isActive, Boolean isSubscriber) {
+		super();
+		this.userId = userId;
+		this.userName = userName;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.password = password;
+		this.postcode = postcode;
+		this.isActive = isActive;
+		this.isSubscriber = isSubscriber;
 	}
 
-	public Long getUser_id() {
-		return user_id;
+	public Long getUserId() {
+		return userId;
 	}
 
-	public void setUser_id(Long user_id) {
-		this.user_id = user_id;
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
-	public String getFirst_name() {
-		return first_name;
+	public String getUserName() {
+		return userName;
 	}
 
-	public void setFirst_name(String first_name) {
-		this.first_name = first_name;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
-	public String getLast_name() {
-		return last_name;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setLast_name(String last_name) {
-		this.last_name = last_name;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	public String getEmail() {
@@ -65,28 +93,53 @@ public class User {
 		this.password = password;
 	}
 
-	public String getSalt_value() {
-		return salt_value;
+	public String getSaltValue() {
+		return saltValue;
 	}
 
-	public void setSalt_value(String salt_value) {
-		this.salt_value = salt_value;
+	public void setSaltValue(String saltValue) {
+		this.saltValue = saltValue;
 	}
 
-	public Integer getPostcode_id() {
-		return postcode_id;
+	public Integer getPostcodeId() {
+		return postcodeId;
 	}
 
-	public void setPostcode_id(Integer postcode_id) {
-		this.postcode_id = postcode_id;
+	public void setPostcodeId(Integer postcodeId) {
+		this.postcodeId = postcodeId;
+	}
+	
+	
+	public Integer getCountyId() {
+		return countyId;
 	}
 
-	public Boolean getIs_active() {
-		return is_active;
+	public void setCountyId(Integer countyId) {
+		this.countyId = countyId;
 	}
 
-	public void setIs_active(Boolean is_active) {
-		this.is_active = is_active;
+	public String getPostcode() {
+		return postcode;
+	}
+
+	public void setPostcode(String postcode) {
+		this.postcode = postcode;
+	}
+
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
+	}
+
+	public Boolean getIsSubscriber() {
+		return isSubscriber;
+	}
+
+	public void setIsSubscriber(Boolean isSubscriber) {
+		this.isSubscriber = isSubscriber;
 	}
 
 

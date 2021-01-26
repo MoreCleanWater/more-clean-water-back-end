@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -32,24 +34,34 @@ public class UserAddHandler implements RequestHandler<APIGatewayProxyRequestEven
 		ObjectMapper userObj = new ObjectMapper();
 		try {
 			User user = userObj.readValue(userbody, User.class);
-			String password = PasswordUtils.generatePassword(8);
+			String salt = PasswordUtils.getSalt(30);
+			String securePassword = PasswordUtils.generateSecurePassword(user.getPassword(), salt);
+	
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			connection = DriverManager
 					.getConnection(String.format("jdbc:mysql://%s/%s?user=%s&password=%s", System.getenv("DB_HOST"),
 							System.getenv("DB_NAME"), System.getenv("DB_USER"), System.getenv("DB_PASSWORD")));
-			String query = " insert into user ( postcode_id, first_name, last_name, password,salt_value,email,is_active)"
-					+ " values ( ?, ?, ?, ?,?,?,?)";
+			String query = " insert into user (user_name, postcode,county_id, first_name, last_name, password,salt_value,email,is_subscriber)"
+					+ " values ( ?, ?, ?, ?,?,?,?,?,?)";
 			statement = connection.prepareStatement(query);
-			statement.setInt(1, user.getPostcode_id());
-			statement.setString(2, user.getFirst_name());
-			statement.setString(3, user.getLast_name());
-			statement.setString(4, password);
-			statement.setString(5, user.getSalt_value());
-			statement.setString(6, user.getEmail());
-			statement.setBoolean(7, true);
+			statement.setString(1, user.getUserName());
+			statement.setString(2, user.getPostcode());
+			statement.setInt(3, user.getCountyId());
+			statement.setString(4, user.getFirstName());
+			statement.setString(5, user.getLastName());
+			statement.setString(6, securePassword);
+			statement.setString(7, salt);
+			statement.setString(8, user.getEmail());
+			statement.setBoolean(9, user.getIsSubscriber());
 			statement.executeUpdate();
 			response.setStatusCode(200);
-			LOG.debug("saving user = " + user.getFirst_name());
+			
+			Map<String, String> headers = new HashMap<>();
+	        headers.put( "Access-Control-Allow-Origin", "*");
+	        headers.put( "Access-Control-Allow-Credentials", "true" );
+			response.setHeaders(headers);
+			
+			LOG.debug("saving user = " + user.getFirstName());
 			LOG.info("user info=", user);
 
 			response.setBody("User is created successfully");

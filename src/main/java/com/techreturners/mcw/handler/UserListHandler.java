@@ -5,7 +5,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -36,10 +39,10 @@ public class UserListHandler implements RequestHandler<APIGatewayProxyRequestEve
 			resultset = statement.executeQuery();
 
 			while (resultset.next()) {
-				User user = new User(resultset.getLong("user_id"), resultset.getInt("postcode_id"),
+				User user = new User(resultset.getLong("user_id"), resultset.getString("user_name"),
 						resultset.getString("first_name"), resultset.getString("last_name"),
-						resultset.getString("password"), resultset.getString("salt_value"),
-						resultset.getString("email"), resultset.getBoolean("is_active"));
+						resultset.getString("password"), resultset.getString("postcode"), resultset.getString("email"),
+						resultset.getBoolean("is_active"), resultset.getBoolean("is_subscriber"));
 				users.add(user);
 
 			}
@@ -51,6 +54,12 @@ public class UserListHandler implements RequestHandler<APIGatewayProxyRequestEve
 
 		APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
 		response.setStatusCode(200);
+
+		Map<String, String> headers = new HashMap<>();
+		headers.put("Access-Control-Allow-Origin", "*");
+		headers.put("Access-Control-Allow-Credentials", "true");
+		response.setHeaders(headers);
+
 		ObjectMapper userMapper = new ObjectMapper();
 
 		try {
