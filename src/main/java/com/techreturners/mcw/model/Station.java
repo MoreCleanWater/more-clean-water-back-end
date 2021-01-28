@@ -4,62 +4,93 @@ import java.util.Date;
 
 public class Station {
 
-	private Long station_id;
-	private Integer postcode_id;
+	private Integer stationId;
+	private Integer postcodeId;
+	private Integer countyId;
+	private String postcode;
 	private Integer size;
 	private String capacity;
-	private Date  installation_date;
-	private Boolean is_working;
-	
-	public Station() {}
-	
-	public Station(Long station_id, Integer postcode_id, Integer size, String capacity, Date installation_date,
-			Boolean is_working) {
+	private Date installationDate;
+
+	public Station(Integer stationId, Integer countyId, String postcode, Integer size, String capacity,
+			Date installationDate, Boolean isWorking) {
 		super();
-		this.station_id = station_id;
-		this.postcode_id = postcode_id;
+		this.stationId = stationId;
+		this.countyId = countyId;
+		this.postcode = postcode;
 		this.size = size;
 		this.capacity = capacity;
-		this.installation_date = installation_date;
-		this.is_working = is_working;
+		this.installationDate = installationDate;
+		this.isWorking = isWorking;
 	}
 
+	private Boolean isWorking;
 
-	public Long getStation_id() {
-		return station_id;
+	public Station() {
 	}
-	public void setStation_id(Long station_id) {
-		this.station_id = station_id;
+
+	public Integer getStationId() {
+		return stationId;
 	}
-	public Integer getPostcode_id() {
-		return postcode_id;
+
+	public void setStationId(Integer stationId) {
+		this.stationId = stationId;
 	}
-	public void setPostcode_id(Integer postcode_id) {
-		this.postcode_id = postcode_id;
+
+	public Integer getPostcodeId() {
+		return postcodeId;
 	}
+
+	public void setPostcodeId(Integer postcodeId) {
+		this.postcodeId = postcodeId;
+	}
+
+	public Integer getCountyId() {
+		return countyId;
+	}
+
+	public void setCountyId(Integer countyId) {
+		this.countyId = countyId;
+	}
+
+	public String getPostcode() {
+		return postcode;
+	}
+
+	public void setPostcode(String postcode) {
+		this.postcode = postcode;
+	}
+
 	public Integer getSize() {
 		return size;
 	}
+
 	public void setSize(Integer size) {
 		this.size = size;
 	}
+
 	public String getCapacity() {
 		return capacity;
 	}
+
 	public void setCapacity(String capacity) {
 		this.capacity = capacity;
 	}
-	public Date getInstallation_date() {
-		return installation_date;
+
+	public Date getInstallationDate() {
+		return installationDate;
 	}
-	public void setInstallation_date(Date installation_date) {
-		this.installation_date = installation_date;
+
+	public void setInstallationDate(Date installationDate) {
+		this.installationDate = installationDate;
 	}
-	public Boolean getIs_working() {
-		return is_working;
+
+	public Boolean getIsWorking() {
+		return isWorking;
 	}
-	public void setIs_working(Boolean is_working) {
-		this.is_working = is_working;
+
+	public void setIsWorking(Boolean isWorking) {
+		this.isWorking = isWorking;
 	}
-	
+
 }

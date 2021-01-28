@@ -1,10 +1,14 @@
 package com.techreturners.mcw.handler;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -15,7 +19,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techreturners.mcw.learning.Handler;
 import com.techreturners.mcw.model.Station;
-import com.techreturners.mcw.util.DatabaseUtil;
 
 public class StationListHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
@@ -28,17 +31,19 @@ public class StationListHandler implements RequestHandler<APIGatewayProxyRequest
 	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent request, Context context) {
 		List<Station> stations = new ArrayList<>();
 		try {
-			connection = DatabaseUtil.getConnection();
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			connection = DriverManager
+					.getConnection(String.format("jdbc:mysql://%s/%s?user=%s&password=%s", System.getenv("DB_HOST"),
+							System.getenv("DB_NAME"), System.getenv("DB_USER"), System.getenv("DB_PASSWORD")));
 
 			statement = connection.prepareStatement("Select * from water_station");
 			resultset = statement.executeQuery();
 
 			while (resultset.next()) {
-				Station water_stat = new Station(resultset.getLong("station_id"), resultset.getInt("station_id"),
-						resultset.getInt("size"), resultset.getString("capacity"),
+				Station water_stat = new Station(resultset.getInt("station_id"), resultset.getInt("county_id"),
+						resultset.getString("postcode"),resultset.getInt("size"), resultset.getString("capacity"),
 						resultset.getDate("installation_date"), resultset.getBoolean("is_working"));
 				stations.add(water_stat);
-
 			}
 		} catch (Exception e) {
 			LOG.error("Unable to open database connection in Station List= ", e);
@@ -48,6 +53,12 @@ public class StationListHandler implements RequestHandler<APIGatewayProxyRequest
 
 		APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
 		response.setStatusCode(200);
+		
+		Map<String, String> headers = new HashMap<>();
+		headers.put("Access-Control-Allow-Origin", "*");
+		headers.put("Access-Control-Allow-Credentials", "true");
+		response.setHeaders(headers);
+		
 		ObjectMapper stationMapper = new ObjectMapper();
 
 		try {

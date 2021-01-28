@@ -1,8 +1,11 @@
 package com.techreturners.mcw.handler;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -12,7 +15,6 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techreturners.mcw.learning.Handler;
 import com.techreturners.mcw.model.Station;
-import com.techreturners.mcw.util.DatabaseUtil;
 
 public class StationEditHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
@@ -30,9 +32,12 @@ public class StationEditHandler implements RequestHandler<APIGatewayProxyRequest
 
 		try {
 			Station station = stationObj.readValue(stationbody, Station.class);
-			connection = DatabaseUtil.getConnection();
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			connection = DriverManager
+					.getConnection(String.format("jdbc:mysql://%s/%s?user=%s&password=%s", System.getenv("DB_HOST"),
+							System.getenv("DB_NAME"), System.getenv("DB_USER"), System.getenv("DB_PASSWORD")));
 			String query = "update water_station set size = ?, capacity = ?, installation_date = ? where station_id = ?";
-			
+
 			statement = connection.prepareStatement(query);
 			statement.setInt(1, station.getSize());
 			statement.setString(2, station.getCapacity());
@@ -40,7 +45,10 @@ public class StationEditHandler implements RequestHandler<APIGatewayProxyRequest
 			statement.setString(4, station_id);
 			statement.executeUpdate();
 			response.setStatusCode(200);
-
+			Map<String, String> headers = new HashMap<>();
+			headers.put("Access-Control-Allow-Origin", "*");
+			headers.put("Access-Control-Allow-Credentials", "true");
+			response.setHeaders(headers);
 			LOG.debug("updating station  ");
 			LOG.info("station info=");
 
@@ -53,6 +61,7 @@ public class StationEditHandler implements RequestHandler<APIGatewayProxyRequest
 		}
 		return response;
 	}
+
 	private void closeConnection() {
 		try {
 			if (resultset != null) {

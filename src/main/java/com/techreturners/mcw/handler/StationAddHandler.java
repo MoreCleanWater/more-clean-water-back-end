@@ -1,8 +1,11 @@
 package com.techreturners.mcw.handler;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -12,7 +15,6 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techreturners.mcw.learning.Handler;
 import com.techreturners.mcw.model.Station;
-import com.techreturners.mcw.util.DatabaseUtil;
 
 public class StationAddHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
@@ -28,17 +30,25 @@ public class StationAddHandler implements RequestHandler<APIGatewayProxyRequestE
 		ObjectMapper stationObj = new ObjectMapper();
 		try {
 			Station station = stationObj.readValue(stationbody, Station.class);
-			connection = DatabaseUtil.getConnection();
-			String query = " insert into water_station ( postcode_id, size, capacity, installation_date,is_working)"
-					+ " values ( ?, ?, ?, ?,?)";
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			connection = DriverManager
+					.getConnection(String.format("jdbc:mysql://%s/%s?user=%s&password=%s", System.getenv("DB_HOST"),
+							System.getenv("DB_NAME"), System.getenv("DB_USER"), System.getenv("DB_PASSWORD")));
+			String query = " insert into water_station ( county_id,postcode, size, capacity, installation_date,is_working)"
+					+ " values ( ?, ?, ?, ?,?,?)";
 			statement = connection.prepareStatement(query);
-			statement.setInt(1, station.getPostcode_id());
-			statement.setInt(2, station.getSize());
-			statement.setString(3, station.getCapacity());
-			statement.setDate(4, java.sql.Date.valueOf(java.time.LocalDate.now()));
-			statement.setBoolean(5, true);
+			statement.setInt(1, station.getCountyId());
+			statement.setString(2, station.getPostcode());
+			statement.setInt(3, station.getSize());
+			statement.setString(4, station.getCapacity());
+			statement.setDate(5, java.sql.Date.valueOf(java.time.LocalDate.now()));
+			statement.setBoolean(6, true);
 			statement.executeUpdate();
 			response.setStatusCode(200);
+			Map<String, String> headers = new HashMap<>();
+			headers.put("Access-Control-Allow-Origin", "*");
+			headers.put("Access-Control-Allow-Credentials", "true");
+			response.setHeaders(headers);
 			LOG.debug("saving station = ");
 			LOG.info("station info=", station);
 
