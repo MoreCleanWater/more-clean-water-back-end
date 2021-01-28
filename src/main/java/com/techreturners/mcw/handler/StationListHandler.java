@@ -42,7 +42,7 @@ public class StationListHandler implements RequestHandler<APIGatewayProxyRequest
 			while (resultset.next()) {
 				Station water_stat = new Station(resultset.getInt("station_id"), resultset.getInt("county_id"),
 						resultset.getString("postcode"),resultset.getInt("size"), resultset.getString("capacity"),
-						resultset.getDate("installation_date"), resultset.getBoolean("is_working"));
+						resultset.getString("installation_date"), resultset.getBoolean("is_working"));
 				stations.add(water_stat);
 			}
 		} catch (Exception e) {

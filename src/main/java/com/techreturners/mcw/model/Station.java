@@ -11,6 +11,8 @@ public class Station {
 	private Integer size;
 	private String capacity;
 	private Date installationDate;
+	private String installDate;
+
 
 	public Station(Integer stationId, Integer countyId, String postcode, Integer size, String capacity,
 			Date installationDate, Boolean isWorking) {
@@ -21,6 +23,17 @@ public class Station {
 		this.size = size;
 		this.capacity = capacity;
 		this.installationDate = installationDate;
+		this.isWorking = isWorking;
+	}
+	public Station(Integer stationId, Integer countyId, String postcode, Integer size, String capacity,
+			String installDate, Boolean isWorking) {
+		super();
+		this.stationId = stationId;
+		this.countyId = countyId;
+		this.postcode = postcode;
+		this.size = size;
+		this.capacity = capacity;
+		this.installDate = installDate;
 		this.isWorking = isWorking;
 	}
 
@@ -83,6 +96,14 @@ public class Station {
 
 	public void setInstallationDate(Date installationDate) {
 		this.installationDate = installationDate;
+	}
+
+	public String getInstallDate() {
+		return installDate;
+	}
+
+	public void setInstallDate(String installDate) {
+		this.installDate = installDate;
 	}
 
 	public Boolean getIsWorking() {
