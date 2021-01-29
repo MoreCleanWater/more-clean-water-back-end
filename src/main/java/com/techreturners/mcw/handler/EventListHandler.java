@@ -17,9 +17,9 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techreturners.mcw.learning.Handler;
-import com.techreturners.mcw.model.User;
+import com.techreturners.mcw.model.Event;
 
-public class UserListHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
+public class EventListHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
 	private static final Logger LOG = LogManager.getLogger(Handler.class);
 	private Connection connection = null;
@@ -28,25 +28,25 @@ public class UserListHandler implements RequestHandler<APIGatewayProxyRequestEve
 
 	@Override
 	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent request, Context context) {
-		List<User> users = new ArrayList<>();
+		List<Event> events = new ArrayList<>();
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			connection = DriverManager
 					.getConnection(String.format("jdbc:mysql://%s/%s?user=%s&password=%s", System.getenv("DB_HOST"),
 							System.getenv("DB_NAME"), System.getenv("DB_USER"), System.getenv("DB_PASSWORD")));
-			statement = connection.prepareStatement("Select * from user");
+			statement = connection.prepareStatement("Select * from event");
 			resultset = statement.executeQuery();
 
 			while (resultset.next()) {
-				User user = new User(resultset.getLong("user_id"), resultset.getString("user_name"),
-						resultset.getString("postcode"),resultset.getString("first_name"), resultset.getString("last_name"),
-						 resultset.getString("email"),
-						resultset.getBoolean("is_active"), resultset.getBoolean("is_subscriber"));
-				users.add(user);
+				Event event = new Event(resultset.getInt("event_id"), resultset.getString("link"),
+						resultset.getString("title"), resultset.getString("description"),
+						resultset.getString("event_date"), resultset.getString("event_time"),
+						resultset.getBoolean("is_cancelled"));
+				events.add(event);
 
 			}
 		} catch (Exception e) {
-			LOG.error("Unable to open database connection in User List= ", e);
+			LOG.error("Unable to open database connection in Events List= ", e);
 		} finally {
 			closeConnection();
 		}
@@ -62,11 +62,10 @@ public class UserListHandler implements RequestHandler<APIGatewayProxyRequestEve
 		ObjectMapper userMapper = new ObjectMapper();
 
 		try {
-			String userList = userMapper.writeValueAsString(users);
-			response.setBody(userList);
+			String eventlist = userMapper.writeValueAsString(events);
+			response.setBody(eventlist);
 		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-			LOG.info("error in getting user List Json= ", e.getMessage());
+			LOG.info("error in getting events List Json= ", e.getMessage());
 		}
 		return response;
 	}
@@ -86,7 +85,7 @@ public class UserListHandler implements RequestHandler<APIGatewayProxyRequestEve
 				connection.close();
 			}
 		} catch (Exception ex) {
-			LOG.error("Unable to close database connection in User List= ", ex.getMessage());
+			LOG.error("Unable to close database connection in Event List= ", ex.getMessage());
 		}
 	}
 

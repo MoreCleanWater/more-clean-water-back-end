@@ -93,24 +93,28 @@ functions:
       - http:
           path: /stations/list
           method: get
+          cors: true # <-- CORS!
   stations-add-api:
     handler: com.techreturners.mcw.handler.StationAddHandler # Reference to class handler
     events: # Create user
       - http:
           path: /stations/add
           method: post
+          cors: true # <-- CORS!
   stations-edit-api:
     handler: com.techreturners.mcw.handler.StationEditHandler # Reference to class handler
     events: # Update user
       - http:
           path: /stations/edit/{stationId}
           method: put
+          cors: true # <-- CORS!
   stations-disable-api:
     handler: com.techreturners.mcw.handler.StationDisableHandler # Reference to class handler
     events: # Deactivate user
       - http:
           path: /stations/delete/{stationId}
           method: get
+          cors: true # <-- CORS!
 
 # APIs for Awareness Management Module
   sections-list-api: 
@@ -132,6 +136,29 @@ functions:
     events: # Deactivate user
       - http:
           path: /sections/delete/{id}
+          method: delete
+          cors: true # <-- CORS!
+
+# APIs for Meetings Management Module
+  events-list-api: 
+    handler: com.techreturners.mcw.handler.EventListHandler # Reference to class handler
+    events: # Get the user list
+      - http:
+          path: /events/list
+          method: get
+          cors: true # <-- CORS!
+  events-add-api:
+    handler: com.techreturners.mcw.handler.EventAddHandler # Reference to class handler
+    events: # Create user
+      - http:
+          path: /events/add
+          method: post
+          cors: true # <-- CORS!
+  events-cancel-api:
+    handler: com.techreturners.mcw.handler.SectionDeleteHandler # Reference to class handler
+    events: # Deactivate user
+      - http:
+          path: /events/delete/{id}
           method: delete
           cors: true # <-- CORS!
 
