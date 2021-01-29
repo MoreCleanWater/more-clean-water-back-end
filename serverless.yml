@@ -139,7 +139,7 @@ functions:
           method: delete
           cors: true # <-- CORS!
 
-# APIs for Meetings Management Module
+# APIs for Events Management Module
   events-list-api: 
     handler: com.techreturners.mcw.handler.EventListHandler # Reference to class handler
     events: # Get the user list
@@ -155,11 +155,18 @@ functions:
           method: post
           cors: true # <-- CORS!
   events-cancel-api:
-    handler: com.techreturners.mcw.handler.SectionDeleteHandler # Reference to class handler
+    handler: com.techreturners.mcw.handler.EventCancelHandler # Reference to class handler
     events: # Deactivate user
       - http:
-          path: /events/delete/{id}
-          method: delete
+          path: /events/cancel/{eventId}
+          method: get
+          cors: true # <-- CORS!
+  events-edit-api:
+    handler: com.techreturners.mcw.handler.EventEdithandler # Reference to class handler
+    events: # Update user
+      - http:
+          path: /events/edit/{eventId}
+          method: put
           cors: true # <-- CORS!
 
 # APIs for Mics Services

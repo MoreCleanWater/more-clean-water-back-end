@@ -1,30 +1,21 @@
 package com.techreturners.mcw.handler;
 
 import java.sql.Connection;
-
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
-import javax.mail.Authenticator;
 import javax.mail.Message;
-import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
-import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -77,19 +68,20 @@ public class EventAddHandler implements RequestHandler<APIGatewayProxyRequestEve
 			LOG.info("event info");
 
 			response.setBody("Event is created successfully");
-			
+
 			statement = connection.prepareStatement("Select * from user");
 			resultset = statement.executeQuery();
 
 			while (resultset.next()) {
-				User user = new User(resultset.getLong("user_id"),resultset.getString("first_name"), resultset.getString("last_name"),
-						 resultset.getString("email"), resultset.getBoolean("is_subscriber"));
+				User user = new User(resultset.getLong("user_id"), resultset.getString("first_name"),
+						resultset.getString("last_name"), resultset.getString("email"),
+						resultset.getBoolean("is_subscriber"));
 				users.add(user);
 			}
-        	sendEmail();
-
-			//sendEventNotification( users);
-               
+			// sendEmail();
+			// sendSMTPEmail();
+			sendEventNotification(users);
+			// sendtesting();
 		} catch (Exception e) {
 			LOG.error("Unable to open database connection in Event User", e);
 		} finally {
@@ -101,68 +93,84 @@ public class EventAddHandler implements RequestHandler<APIGatewayProxyRequestEve
 	private void sendEventNotification(List<User> users) {
 		LOG.info("sendEventNotification=");
 
-		if(users.size()>0) {
+		if (users.size() > 0) {
 			LOG.info("users.size()>0");
 			users.forEach(user -> {
-		            try {
-		                Boolean is_subscriber = user.getIsSubscriber();
-		                if(is_subscriber) {
-		                	//sendEmail(user);
-		                }
-		            } catch (Exception ex) {
-		    			LOG.error("Error in sending emails", ex.getMessage());
-		            }
-		        });
-			
+				try {
+					Boolean is_subscriber = user.getIsSubscriber();
+					if (is_subscriber) {
+						sendEmail();
+					}
+				} catch (Exception ex) {
+					LOG.error("Error in sending emails", ex.getMessage());
+				}
+			});
+
 		}
 	}
-	
+
 	private void sendEmail() {
 		LOG.info("sendEmail=");
 //guljana@gmail.com
-	
-		 // Recipient's email ID needs to be mentioned.
-	      String to = "guljana@gmail.com";
+		// techtret.team@gmail.com
+		// techtret1234_
+		// Recipient's email ID needs to be mentioned.
+		String to = "guljana@gmail.com";
 
-	      // Sender's email ID needs to be mentioned
-	      String from = "guljana@gmail.com";
+		// Sender's email ID needs to be mentioned
+		String from = "techtret.team@gmail.com";
 
-	      // Assuming you are sending email from localhost
-	      String host = "localhost";
+		// Assuming you are sending email from through gmails smtp
+		String host = "smtp.gmail.com";
 
-	      // Get system properties
-	      Properties properties = System.getProperties();
+		// Get system properties
+		Properties properties = System.getProperties();
 
-	      // Setup mail server
-	      properties.setProperty("mail.smtp.host", host);
+		// Setup mail server
 
-	      // Get the default Session object.
-	      Session session = Session.getDefaultInstance(properties);
+		properties.put("mail.smtp.host", host);
+		properties.put("mail.smtp.port", "465");
+		properties.put("mail.smtp.ssl.enable", "true");
+		properties.put("mail.smtp.auth", "true");
 
+		// Get the Session object.// and pass username and password
+		Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
 
-        try {
-        	 // Create a default MimeMessage object.
-            MimeMessage message = new MimeMessage(session);
+			protected PasswordAuthentication getPasswordAuthentication() {
 
-            // Set From: header field of the header.
-            message.setFrom(new InternetAddress(from));
+				return new PasswordAuthentication("techtret.team@gmail.com", "techtret1234_");
+			}
 
-            // Set To: header field of the header.
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+		});
 
-            // Set Subject: header field
-            message.setSubject("This is the Subject Line!");
+		// Used to debug SMTP issues
+		session.setDebug(true);
 
-            // Now set the actual message
-            message.setText("This is actual message");
+		try {
+			// Create a default MimeMessage object.
+			MimeMessage message = new MimeMessage(session);
 
-            // Send message
-            Transport.send(message);
-            System.out.println("Sent message successfully....");
-        } catch (MessagingException mex) {
-			LOG.error("Error in sending emails= ", mex.toString());
-        }
+			// Set From: header field of the header.
+			message.setFrom(new InternetAddress(from));
+
+			// Set To: header field of the header.
+			message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+
+			// Set Subject: header field
+			message.setSubject("This is the Subject Line!");
+
+			// Now set the actual message
+			message.setText("This is actual message");
+
+			System.out.println("sending...");
+			// Send message
+			Transport.send(message);
+			System.out.println("Sent message successfully....");
+		} catch (MessagingException mex) {
+			LOG.error("Unable to close database connection in Create Event", mex.toString());
+		}
 	}
+
 	/*
 	 * Function for closing database connections
 	 * 
