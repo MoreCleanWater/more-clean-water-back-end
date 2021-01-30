@@ -35,7 +35,7 @@ public class User {
 	}
 
 	// for User listing 
-	public User(Long userId,String userName, String postcode,String county, String firstName, String lastName, String email,
+	public User(Long userId,String userName, String postcode,String county,Integer countyId, String firstName, String lastName, String email,
 			Boolean isActive, Boolean isSubscriber) {
 		super();
 		this.userId = userId;
@@ -45,6 +45,7 @@ public class User {
 		this.email = email;
 		this.postcode = postcode;
 		this.county = county;
+		this.countyId = countyId;
 		this.isActive = isActive;
 		this.isSubscriber = isSubscriber;
 	}

@@ -39,7 +39,7 @@ public class UserListHandler implements RequestHandler<APIGatewayProxyRequestEve
 
 			while (resultset.next()) {
 				User user = new User(resultset.getLong("user_id"), resultset.getString("user_name"),
-						resultset.getString("postcode"), resultset.getString("county"),
+						resultset.getString("postcode"), resultset.getString("county"), resultset.getInt("county_id"),
 						resultset.getString("first_name"), resultset.getString("last_name"),
 						resultset.getString("email"), resultset.getBoolean("is_active"),
 						resultset.getBoolean("is_subscriber"));
