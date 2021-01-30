@@ -6,7 +6,14 @@ provider:
   runtime: java8
   region: eu-west-2
   profile: serverless
-
+  plugins:
+   - serverless-iam-roles-per-function
+  iamRoleStatements:
+      - Effect: "Allow"        
+        Action:
+          - ses:SendEmail            
+          - ses:SendRawEmail          
+        Resource: '*'
   environment:
    DB_HOST: ${file(./config.dev.json):DB_HOST}
    DB_NAME: ${file(./config.dev.json):DB_NAME}
@@ -154,6 +161,7 @@ functions:
           path: /events/add
           method: post
           cors: true # <-- CORS!
+
   events-cancel-api:
     handler: com.techreturners.mcw.handler.EventCancelHandler # Reference to class handler
     events: # Deactivate user
@@ -168,7 +176,7 @@ functions:
           path: /events/edit/{eventId}
           method: put
           cors: true # <-- CORS!
-
+   
 # APIs for Mics Services
 
   county-list-api: 

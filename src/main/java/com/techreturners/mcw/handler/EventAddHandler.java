@@ -8,14 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -26,6 +18,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techreturners.mcw.learning.Handler;
 import com.techreturners.mcw.model.Event;
 import com.techreturners.mcw.model.User;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
+import com.amazonaws.services.simpleemail.model.Body;
+import com.amazonaws.services.simpleemail.model.Content;
+import com.amazonaws.services.simpleemail.model.Destination;
+import com.amazonaws.services.simpleemail.model.SendEmailRequest;
+import com.amazonaws.services.simpleemail.model.Message;
+
 
 public class EventAddHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
@@ -56,7 +57,7 @@ public class EventAddHandler implements RequestHandler<APIGatewayProxyRequestEve
 			statement.setString(4, event.getEventDate());
 			statement.setString(5, event.getEventTime());
 			statement.setBoolean(6, event.getIsCancelled());
-			statement.executeUpdate();
+			//statement.executeUpdate();
 			response.setStatusCode(200);
 
 			Map<String, String> headers = new HashMap<>();
@@ -78,10 +79,7 @@ public class EventAddHandler implements RequestHandler<APIGatewayProxyRequestEve
 						resultset.getBoolean("is_subscriber"));
 				users.add(user);
 			}
-			// sendEmail();
-			// sendSMTPEmail();
 			sendEventNotification(users);
-			// sendtesting();
 		} catch (Exception e) {
 			LOG.error("Unable to open database connection in Event User", e);
 		} finally {
@@ -99,7 +97,7 @@ public class EventAddHandler implements RequestHandler<APIGatewayProxyRequestEve
 				try {
 					Boolean is_subscriber = user.getIsSubscriber();
 					if (is_subscriber) {
-						sendEmail();
+						awsmail();
 					}
 				} catch (Exception ex) {
 					LOG.error("Error in sending emails", ex.getMessage());
@@ -108,68 +106,58 @@ public class EventAddHandler implements RequestHandler<APIGatewayProxyRequestEve
 
 		}
 	}
+	
+	private void awsmail() {
+		
+	
+		    String FROM = "techtret.team@gmail.com";
+		    String TO = "guljana@gmail.com";
 
-	private void sendEmail() {
-		LOG.info("sendEmail=");
-//guljana@gmail.com
-		// techtret.team@gmail.com
-		// techtret1234_
-		// Recipient's email ID needs to be mentioned.
-		String to = "guljana@gmail.com";
+		  // The configuration set to use for this email. If you do not want to use a
+		  // configuration set, comment the following variable and the 
+		  // .withConfigurationSetName(CONFIGSET); argument below.
+		  //static final String CONFIGSET = "ConfigSet";
 
-		// Sender's email ID needs to be mentioned
-		String from = "techtret.team@gmail.com";
+		  String SUBJECT = "Amazon SES test (AWS SDK for Java)";
+		  String HTMLBODY = "<h1>Amazon SES test (AWS SDK for Java)</h1>"
+		      + "<p>This email was sent with <a href='https://aws.amazon.com/ses/'>"
+		      + "Amazon SES</a> using the <a href='https://aws.amazon.com/sdk-for-java/'>" 
+		      + "AWS SDK for Java</a>";
+          String TEXTBODY = "This email was sent through Amazon SES "
+		      + "using the AWS SDK for Java.";
+          
+          try {
+              AmazonSimpleEmailService client = 
+                  AmazonSimpleEmailServiceClientBuilder.standard()
+                  // Replace US_WEST_2 with the AWS Region you're using for
+                  // Amazon SES.
+                    .withRegion(Regions.EU_WEST_2).build();
+              SendEmailRequest request = new SendEmailRequest()
+                  .withDestination(
+                      new Destination().withToAddresses(TO))
+                  .withMessage(new Message()
+                      .withBody(new Body()
+                          .withHtml(new Content()
+                              .withCharset("UTF-8").withData(HTMLBODY))
+                          .withText(new Content()
+                              .withCharset("UTF-8").withData(TEXTBODY)))
+                      .withSubject(new Content()
+                          .withCharset("UTF-8").withData(SUBJECT)))
+                  .withSource(FROM);
+                  // Comment or remove the next line if you are not using a
+                  // configuration set
+                 // .withConfigurationSetName(CONFIGSET);
+				LOG.debug(" before send email");
 
-		// Assuming you are sending email from through gmails smtp
-		String host = "smtp.gmail.com";
-
-		// Get system properties
-		Properties properties = System.getProperties();
-
-		// Setup mail server
-
-		properties.put("mail.smtp.host", host);
-		properties.put("mail.smtp.port", "465");
-		properties.put("mail.smtp.ssl.enable", "true");
-		properties.put("mail.smtp.auth", "true");
-
-		// Get the Session object.// and pass username and password
-		Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
-
-			protected PasswordAuthentication getPasswordAuthentication() {
-
-				return new PasswordAuthentication("techtret.team@gmail.com", "techtret1234_");
-			}
-
-		});
-
-		// Used to debug SMTP issues
-		session.setDebug(true);
-
-		try {
-			// Create a default MimeMessage object.
-			MimeMessage message = new MimeMessage(session);
-
-			// Set From: header field of the header.
-			message.setFrom(new InternetAddress(from));
-
-			// Set To: header field of the header.
-			message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-
-			// Set Subject: header field
-			message.setSubject("This is the Subject Line!");
-
-			// Now set the actual message
-			message.setText("This is actual message");
-
-			System.out.println("sending...");
-			// Send message
-			Transport.send(message);
-			System.out.println("Sent message successfully....");
-		} catch (MessagingException mex) {
-			LOG.error("Unable to close database connection in Create Event", mex.toString());
-		}
+              client.sendEmail(request);
+				LOG.debug(" sending emails last");
+            } catch (Exception ex) {
+            	ex.printStackTrace();
+            	LOG.error("Error in sending emails" );
+                  
+            }
 	}
+
 
 	/*
 	 * Function for closing database connections

@@ -56,12 +56,13 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.23</version>
 		</dependency>
-		<!-- Httpclient -->
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.5</version>
+			<version>4.5.9</version>
 		</dependency>
+
 		<!-- Gson -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -79,6 +80,14 @@
 			<artifactId>mail</artifactId>
 			<version>1.5.0-b01</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-ses -->
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-ses</artifactId>
+			<version>1.11.945</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
