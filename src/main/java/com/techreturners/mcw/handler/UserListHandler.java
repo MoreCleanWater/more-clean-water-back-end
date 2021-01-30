@@ -34,14 +34,15 @@ public class UserListHandler implements RequestHandler<APIGatewayProxyRequestEve
 			connection = DriverManager
 					.getConnection(String.format("jdbc:mysql://%s/%s?user=%s&password=%s", System.getenv("DB_HOST"),
 							System.getenv("DB_NAME"), System.getenv("DB_USER"), System.getenv("DB_PASSWORD")));
-			statement = connection.prepareStatement("Select * from user");
+			statement = connection.prepareStatement("SELECT * FROM user u join county c on u.county_id=c.county_id");
 			resultset = statement.executeQuery();
 
 			while (resultset.next()) {
 				User user = new User(resultset.getLong("user_id"), resultset.getString("user_name"),
-						resultset.getString("postcode"),resultset.getString("first_name"), resultset.getString("last_name"),
-						 resultset.getString("email"),
-						resultset.getBoolean("is_active"), resultset.getBoolean("is_subscriber"));
+						resultset.getString("postcode"), resultset.getString("county"),
+						resultset.getString("first_name"), resultset.getString("last_name"),
+						resultset.getString("email"), resultset.getBoolean("is_active"),
+						resultset.getBoolean("is_subscriber"));
 				users.add(user);
 
 			}
