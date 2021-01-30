@@ -13,11 +13,13 @@ public class User {
 	private String postcode;
 	private Boolean isActive;
 	private Boolean isSubscriber;
-	
-	public User() {}
 
-	public User(Long userId, Integer countyId,String userName, String firstName, String lastName, String email, String password,
-			 String postcode, Boolean isActive, Boolean isSubscriber) {
+	public User() {
+	}
+
+	// for list in Admin Module
+	public User(Long userId, Integer countyId, String userName, String firstName, String lastName, String email,
+			String password, String postcode, Boolean isActive, Boolean isSubscriber) {
 		super();
 		this.userId = userId;
 		this.userName = userName;
@@ -31,7 +33,8 @@ public class User {
 		this.isSubscriber = isSubscriber;
 	}
 
-	public User(Long userId,String userName,  String postcode,String firstName, String lastName, String email,
+	// for update
+	public User(Long userId, String userName, String postcode, String firstName, String lastName, String email,
 			Boolean isActive, Boolean isSubscriber) {
 		super();
 		this.userId = userId;
@@ -43,14 +46,24 @@ public class User {
 		this.isActive = isActive;
 		this.isSubscriber = isSubscriber;
 	}
-	public User(Long userId,String userName,  String password,
-			String saltValue, Boolean isActive) {
+
+	// for authentication
+	public User(Long userId, String userName, String password, String saltValue, Boolean isActive) {
 		super();
 		this.userId = userId;
 		this.userName = userName;
 		this.password = password;
 		this.saltValue = saltValue;
 		this.isActive = isActive;
+	}
+
+	// for getting emails
+	public User(String firstName, String lastName, String email, Boolean isSubscriber) {
+		super();
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.isSubscriber = isSubscriber;
 	}
 
 	public Long getUserId() {
@@ -116,8 +129,7 @@ public class User {
 	public void setPostcodeId(Integer postcodeId) {
 		this.postcodeId = postcodeId;
 	}
-	
-	
+
 	public Integer getCountyId() {
 		return countyId;
 	}
@@ -149,6 +161,5 @@ public class User {
 	public void setIsSubscriber(Boolean isSubscriber) {
 		this.isSubscriber = isSubscriber;
 	}
-
 
 }

@@ -36,13 +36,14 @@ public class StationEditHandler implements RequestHandler<APIGatewayProxyRequest
 			connection = DriverManager
 					.getConnection(String.format("jdbc:mysql://%s/%s?user=%s&password=%s", System.getenv("DB_HOST"),
 							System.getenv("DB_NAME"), System.getenv("DB_USER"), System.getenv("DB_PASSWORD")));
-			String query = "update water_station set size = ?, capacity = ?, installation_date = ? where station_id = ?";
+			String query = "update water_station set county_id = ?,postcode = ?,size = ?, capacity = ? where station_id = ?";
 
 			statement = connection.prepareStatement(query);
-			statement.setInt(1, station.getSize());
-			statement.setString(2, station.getCapacity());
-			statement.setDate(3, java.sql.Date.valueOf(java.time.LocalDate.now()));
-			statement.setString(4, station_id);
+			statement.setInt(1, station.getCountyId());
+			statement.setString(2, station.getPostcode());
+			statement.setInt(3, station.getSize());
+			statement.setString(4, station.getCapacity());
+			statement.setString(5, station_id);
 			statement.executeUpdate();
 			response.setStatusCode(200);
 			Map<String, String> headers = new HashMap<>();

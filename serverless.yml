@@ -122,6 +122,13 @@ functions:
           path: /stations/delete/{stationId}
           method: get
           cors: true # <-- CORS!
+  stations-activate-api:
+    handler: com.techreturners.mcw.handler.StationActivateHandler # Reference to class handler
+    events: # Deactivate user
+      - http:
+          path: /stations/activate/{stationId}
+          method: get
+          cors: true # <-- CORS!
 
 # APIs for Awareness Management Module
   sections-list-api: 

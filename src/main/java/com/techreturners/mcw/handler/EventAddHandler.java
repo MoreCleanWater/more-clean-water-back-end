@@ -14,6 +14,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techreturners.mcw.learning.Handler;
 import com.techreturners.mcw.model.Event;
@@ -70,16 +71,17 @@ public class EventAddHandler implements RequestHandler<APIGatewayProxyRequestEve
 
 			response.setBody("Event is created successfully");
 
-			statement = connection.prepareStatement("Select * from user");
+			statement = connection.prepareStatement("Select * from user where is_subscriber = 1 ");
 			resultset = statement.executeQuery();
 
 			while (resultset.next()) {
-				User user = new User(resultset.getLong("user_id"), resultset.getString("first_name"),
+				User user = new User(resultset.getString("first_name"),
 						resultset.getString("last_name"), resultset.getString("email"),
 						resultset.getBoolean("is_subscriber"));
 				users.add(user);
 			}
 			sendEventNotification(users);
+
 		} catch (Exception e) {
 			LOG.error("Unable to open database connection in Event User", e);
 		} finally {
@@ -89,35 +91,49 @@ public class EventAddHandler implements RequestHandler<APIGatewayProxyRequestEve
 	}
 
 	private void sendEventNotification(List<User> users) {
-		LOG.info("sendEventNotification=");
+		List<String> recipients = new ArrayList<String>();
+		/*
+		 * if (users.size() > 0) { LOG.info("user  size= "+users.size()); for(int
+		 * i=0;i<users.size();i++) { LOG.debug("user object = "+users.get(i));
+		 * LOG.debug("user email = "+users.get(i).getEmail());
+		 * 
+		 * }
+		 * 
+		 * 
+		 * ObjectMapper userMapper = new ObjectMapper();
+		 * 
+		 * try { String userList = userMapper.writeValueAsString(users);
+		 * LOG.debug("userList = "+userList);
+		 * 
+		 * } catch (JsonProcessingException e) { e.printStackTrace();
+		 * LOG.info("error in getting user List Json= ", e.getMessage()); }
+		 */
 
-		if (users.size() > 0) {
-			LOG.info("users.size()>0");
-			users.forEach(user -> {
+users.forEach(user -> {
 				try {
 					Boolean is_subscriber = user.getIsSubscriber();
+					LOG.debug("is_subscriber "+is_subscriber);
+					LOG.debug("userid - "+user.getFirstName());
+					LOG.debug("email - "+user.getEmail());
+
 					if (is_subscriber) {
-						awsmail();
-					}
+							recipients.add(user.getEmail());					}
 				} catch (Exception ex) {
-					LOG.error("Error in sending emails", ex.getMessage());
+					ex.printStackTrace();
+					LOG.error("Error in getting user email addresses", ex.getMessage());
 				}
 			});
-
+          LOG.debug("email - "+recipients.size());
+		  sendEmail(recipients);
 		}
-	}
-	
-	private void awsmail() {
+	   
 		
 	
-		    String FROM = "techtret.team@gmail.com";
-		    String TO = "guljana@gmail.com";
-
-		  // The configuration set to use for this email. If you do not want to use a
-		  // configuration set, comment the following variable and the 
-		  // .withConfigurationSetName(CONFIGSET); argument below.
-		  //static final String CONFIGSET = "ConfigSet";
-
+	
+	private void sendEmail( List<String> recipients) {
+		
+	
+		  String FROM = "techtret.team@gmail.com";
 		  String SUBJECT = "Amazon SES test (AWS SDK for Java)";
 		  String HTMLBODY = "<h1>Amazon SES test (AWS SDK for Java)</h1>"
 		      + "<p>This email was sent with <a href='https://aws.amazon.com/ses/'>"
@@ -134,7 +150,7 @@ public class EventAddHandler implements RequestHandler<APIGatewayProxyRequestEve
                     .withRegion(Regions.EU_WEST_2).build();
               SendEmailRequest request = new SendEmailRequest()
                   .withDestination(
-                      new Destination().withToAddresses(TO))
+                      new Destination().withToAddresses(recipients))
                   .withMessage(new Message()
                       .withBody(new Body()
                           .withHtml(new Content()
@@ -144,9 +160,6 @@ public class EventAddHandler implements RequestHandler<APIGatewayProxyRequestEve
                       .withSubject(new Content()
                           .withCharset("UTF-8").withData(SUBJECT)))
                   .withSource(FROM);
-                  // Comment or remove the next line if you are not using a
-                  // configuration set
-                 // .withConfigurationSetName(CONFIGSET);
 				LOG.debug(" before send email");
 
               client.sendEmail(request);
