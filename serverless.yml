@@ -87,10 +87,17 @@ functions:
           cors: true # <-- CORS!
   login-user-api: 
     handler: com.techreturners.mcw.handler.UserLoginHandler # Reference to class handler
-    events: # Get the user list
+    events: # Authentication
       - http:
           path: /users/login
           method: put
+          cors: true # <-- CORS!
+  users-passchange-api:
+    handler: com.techreturners.mcw.handler.ChangePasswordHandler # Reference to class handler
+    events: # change password
+      - http:
+          path: /users/passchange/{userId}
+          method: get
           cors: true # <-- CORS!
 
   # APIs for Station Management Module

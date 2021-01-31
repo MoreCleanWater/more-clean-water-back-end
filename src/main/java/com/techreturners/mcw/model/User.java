@@ -68,6 +68,16 @@ public class User {
 		this.email = email;
 		this.isSubscriber = isSubscriber;
 	}
+	
+	// for changing password
+	
+	public User(Long userId,String firstName, String lastName, String email) {
+		super();
+		this.userId = userId;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+	}
 
 	public Long getUserId() {
 		return userId;

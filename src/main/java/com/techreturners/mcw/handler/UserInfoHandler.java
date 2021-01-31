@@ -49,7 +49,7 @@ public class UserInfoHandler implements RequestHandler<APIGatewayProxyRequestEve
 						resultset.getBoolean("is_active"), resultset.getBoolean("is_subscriber"));
 				users.add(user);
 			}
-			LOG.info("end= ");
+			LOG.info("Getting user details= "+ userid);
 		} catch (Exception e) {
 			LOG.error("Unable to open database connection in User detail", e);
 		} finally {
