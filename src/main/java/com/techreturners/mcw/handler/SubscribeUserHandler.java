@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -35,7 +38,10 @@ public class SubscribeUserHandler implements RequestHandler<APIGatewayProxyReque
 			statement.setString(2, user_id);
             statement.executeUpdate();
 			response.setStatusCode(200);
-
+			Map<String, String> headers = new HashMap<>();
+	        headers.put( "Access-Control-Allow-Origin", "*");
+	        headers.put( "Access-Control-Allow-Credentials", "true" );
+			response.setHeaders(headers);
 			LOG.debug("subscribing User = " + user_id);
 			LOG.info("User info=", user_id);
 

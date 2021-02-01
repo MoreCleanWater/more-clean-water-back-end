@@ -194,10 +194,17 @@ functions:
 # APIs for water shortage
 
   shortage-list-api: 
-    handler: com.techreturners.mcw.handler.waterShortageList # Reference to class handler
+    handler: com.techreturners.mcw.handler.WaterShortageList # Reference to class handler
     events: # Get the user list
       - http:
           path: /shortage/list
+          method: get
+          cors: true # <-- CORS!
+  dirtywater-list-api: 
+    handler: com.techreturners.mcw.handler.DirtyWaterHandler # Reference to class handler
+    events: # Get the user list
+      - http:
+          path: /dirty/list
           method: get
           cors: true # <-- CORS!
 

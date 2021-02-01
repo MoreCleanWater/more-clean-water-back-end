@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techreturners.mcw.learning.Handler;
 import com.techreturners.mcw.model.Shortage;
 
-public class waterShortageList implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
+public class WaterShortageList implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
 	private static final Logger LOG = LogManager.getLogger(Handler.class);
 	private Connection connection = null;
