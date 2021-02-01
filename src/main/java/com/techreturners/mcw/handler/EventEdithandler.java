@@ -4,17 +4,28 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
+import com.amazonaws.services.simpleemail.model.Body;
+import com.amazonaws.services.simpleemail.model.Content;
+import com.amazonaws.services.simpleemail.model.Destination;
+import com.amazonaws.services.simpleemail.model.Message;
+import com.amazonaws.services.simpleemail.model.SendEmailRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techreturners.mcw.learning.Handler;
 import com.techreturners.mcw.model.Event;
+import com.techreturners.mcw.model.User;
 
 public class EventEdithandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
@@ -26,6 +37,7 @@ public class EventEdithandler implements RequestHandler<APIGatewayProxyRequestEv
 
 	@Override
 	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent request, Context context) {
+		List<User> users = new ArrayList<>();
 		String eventbody = request.getBody();
 		ObjectMapper eventObj = new ObjectMapper();
 		String event_id = request.getPathParameters().get("eventId");
@@ -51,10 +63,19 @@ public class EventEdithandler implements RequestHandler<APIGatewayProxyRequestEv
 			headers.put("Access-Control-Allow-Origin", "*");
 			headers.put("Access-Control-Allow-Credentials", "true");
 			response.setHeaders(headers);
-			LOG.debug("updating event  "+event.getTitle());
+			LOG.debug("updating event  " + event.getTitle());
 			LOG.info("event info=");
 
 			response.setBody("Event is postponed successfully");
+			statement = connection.prepareStatement("Select * from user where is_subscriber = 1 ");
+			resultset = statement.executeQuery();
+
+			while (resultset.next()) {
+				User user = new User(resultset.getString("first_name"), resultset.getString("last_name"),
+						resultset.getString("email"), resultset.getBoolean("is_subscriber"));
+				users.add(user);
+			}
+			sendEventNotification(users, event);
 
 		} catch (Exception e) {
 			LOG.error("Unable to open database connection in Update Event", e);
@@ -62,6 +83,52 @@ public class EventEdithandler implements RequestHandler<APIGatewayProxyRequestEv
 			closeConnection();
 		}
 		return response;
+	}
+
+	private void sendEventNotification(List<User> users, Event event) {
+		List<String> recipients = new ArrayList<String>();
+		users.forEach(user -> {
+			try {
+				Boolean is_subscriber = user.getIsSubscriber();
+				if (is_subscriber) {
+					recipients.add(user.getEmail());
+				}
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				LOG.error("Error in getting user email addresses", ex.getMessage());
+			}
+		});
+		LOG.debug("email - " + recipients.size());
+		sendEmail(recipients, event);
+	}
+
+	private void sendEmail(List<String> recipients, Event event) {
+
+		String FROM = "techtret.team@gmail.com";
+		String SUBJECT = "MoreCleanWater updated the webinar";
+		String HTMLBODY = "<h1>" + event.getTitle() + "</h1>"
+				+ "<p> The information regarding this webinar on this topic is updated now. It is going to held on "
+				+ event.getEventDate() + " at " + event.getEventTime() + " <br> The Zoom's invitation is: "
+				+ event.getLink() + "  <br> Please join us to listen about " + event.getDescription();
+		LOG.debug(" HTMLBODY " + HTMLBODY);
+
+		String TEXTBODY = "This email was sent through Amazon SES " + "using the AWS SDK for Java.";
+
+		try {
+			AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard()
+					.withRegion(Regions.EU_WEST_2).build();
+			SendEmailRequest request = new SendEmailRequest()
+					.withDestination(new Destination().withToAddresses(recipients))
+					.withMessage(new Message()
+							.withBody(new Body().withHtml(new Content().withCharset("UTF-8").withData(HTMLBODY))
+									.withText(new Content().withCharset("UTF-8").withData(TEXTBODY)))
+							.withSubject(new Content().withCharset("UTF-8").withData(SUBJECT)))
+					.withSource(FROM);
+			client.sendEmail(request);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			LOG.error("Error in sending emails");
+		}
 	}
 
 	private void closeConnection() {

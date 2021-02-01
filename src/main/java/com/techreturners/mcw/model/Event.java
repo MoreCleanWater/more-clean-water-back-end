@@ -10,7 +10,7 @@ public class Event {
 	private String eventTime;
 	private Boolean isCancelled;
 
-	Event() {
+	public Event() {
 	}
 
 	public Event(Integer eventId, String link, String title, String description, String eventDate, String eventTime,
