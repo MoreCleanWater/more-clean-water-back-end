@@ -12,8 +12,7 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.techreturners.mcw.learning.Handler;
 
-
-public class UnsubscribeUser implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
+public class SubscribeUserHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
 	private static final Logger LOG = LogManager.getLogger(Handler.class);
 	private Connection connection = null;
@@ -32,17 +31,17 @@ public class UnsubscribeUser implements RequestHandler<APIGatewayProxyRequestEve
 							System.getenv("DB_NAME"), System.getenv("DB_USER"), System.getenv("DB_PASSWORD")));
 		    String query = "update user set is_subscriber= ? where user_id = ?";
             statement = connection.prepareStatement(query);
-			statement.setBoolean(1, false);
+			statement.setBoolean(1, true);
 			statement.setString(2, user_id);
             statement.executeUpdate();
 			response.setStatusCode(200);
 
-			LOG.debug("unsubscribing User = " + user_id);
+			LOG.debug("subscribing User = " + user_id);
 			LOG.info("User info=", user_id);
 
-			response.setBody("User is unsubscribed successfully");
+			response.setBody("User is subscribed successfully");
 		} catch (Exception e) {
-			LOG.error("Unable to open database connection in unsubscribe User", e);
+			LOG.error("Unable to open database connection in Subscribe User", e);
 		} finally {
 			closeConnection();
 		}
@@ -61,7 +60,7 @@ public class UnsubscribeUser implements RequestHandler<APIGatewayProxyRequestEve
 				connection.close();
 			}
 		} catch (Exception ex) {
-			LOG.error("Unable to close database connection in User unsubscribe", ex.getMessage());
+			LOG.error("Unable to close database connection in User subscribe", ex.getMessage());
 		}
 	}
 }

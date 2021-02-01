@@ -191,6 +191,16 @@ functions:
           method: put
           cors: true # <-- CORS!
    
+# APIs for water shortage
+
+  shortage-list-api: 
+    handler: com.techreturners.mcw.handler.waterShortageList # Reference to class handler
+    events: # Get the user list
+      - http:
+          path: /shortage/list
+          method: get
+          cors: true # <-- CORS!
+
 # APIs for Mics Services
 
   county-list-api: 
@@ -212,5 +222,12 @@ functions:
     events: # Get the user list
       - http:
           path: /users/unsubscribe/{userId}
+          method: put
+          cors: true # <-- CORS!
+  subscribe-user-api: 
+    handler: com.techreturners.mcw.handler.SubscribeUserHandler # Reference to class handler
+    events: # Get the user list
+      - http:
+          path: /users/subscribe/{userId}
           method: put
           cors: true # <-- CORS!
