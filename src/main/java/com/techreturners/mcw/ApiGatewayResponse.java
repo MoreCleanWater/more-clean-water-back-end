@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-/*For Learning Purpose*/
+/*For Learning Purpose of serverless architecutre*/
 public class ApiGatewayResponse {
 
 	private final int statusCode;
