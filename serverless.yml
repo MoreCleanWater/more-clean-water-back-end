@@ -238,3 +238,17 @@ functions:
           path: /users/subscribe/{userId}
           method: put
           cors: true # <-- CORS!
+  alert-user-api: 
+    handler: com.techreturners.mcw.handler.UserAlertHandler # Reference to class handler
+    events: # Get the user list
+      - http:
+          path: /users/alert/{userId}
+          method: get
+          cors: true # <-- CORS!
+  read-alert-api: 
+    handler: com.techreturners.mcw.handler.ReadAlertHandler # Reference to class handler
+    events: # Get the user list
+      - http:
+          path: /read/alert/{userId}
+          method: put
+          cors: true # <-- CORS!
