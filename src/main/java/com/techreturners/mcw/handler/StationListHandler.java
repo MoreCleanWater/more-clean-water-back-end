@@ -36,12 +36,14 @@ public class StationListHandler implements RequestHandler<APIGatewayProxyRequest
 					.getConnection(String.format("jdbc:mysql://%s/%s?user=%s&password=%s", System.getenv("DB_HOST"),
 							System.getenv("DB_NAME"), System.getenv("DB_USER"), System.getenv("DB_PASSWORD")));
 
-			statement = connection.prepareStatement("Select * from water_station");
+			statement = connection
+					.prepareStatement("SELECT * FROM water_station w join postcode p on w.postcode=p.postcode");
 			resultset = statement.executeQuery();
 
 			while (resultset.next()) {
 				Station water_stat = new Station(resultset.getInt("station_id"), resultset.getInt("county_id"),
-						resultset.getString("postcode"),resultset.getInt("size"), resultset.getString("capacity"),
+						resultset.getString("postcode"), resultset.getString("lat"), resultset.getString("lang"),
+						resultset.getInt("size"), resultset.getString("capacity"),
 						resultset.getString("installation_date"), resultset.getBoolean("is_working"));
 				stations.add(water_stat);
 			}
@@ -53,12 +55,12 @@ public class StationListHandler implements RequestHandler<APIGatewayProxyRequest
 
 		APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
 		response.setStatusCode(200);
-		
+
 		Map<String, String> headers = new HashMap<>();
 		headers.put("Access-Control-Allow-Origin", "*");
 		headers.put("Access-Control-Allow-Credentials", "true");
 		response.setHeaders(headers);
-		
+
 		ObjectMapper stationMapper = new ObjectMapper();
 
 		try {

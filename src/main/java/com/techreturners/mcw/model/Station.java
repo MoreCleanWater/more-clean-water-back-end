@@ -8,6 +8,8 @@ public class Station {
 	private Integer postcodeId;
 	private Integer countyId;
 	private String postcode;
+	private String lat;
+	private String lang;
 	private Integer size;
 	private String capacity;
 	private Date installationDate;
@@ -31,6 +33,20 @@ public class Station {
 		this.stationId = stationId;
 		this.countyId = countyId;
 		this.postcode = postcode;
+		this.size = size;
+		this.capacity = capacity;
+		this.installDate = installDate;
+		this.isWorking = isWorking;
+	}
+	
+	public Station(Integer stationId, Integer countyId, String postcode,String lat,String lang, Integer size, String capacity,
+			String installDate, Boolean isWorking) {
+		super();
+		this.stationId = stationId;
+		this.countyId = countyId;
+		this.postcode = postcode;
+		this.lat = lat;
+		this.lang = lang;
 		this.size = size;
 		this.capacity = capacity;
 		this.installDate = installDate;
@@ -74,6 +90,18 @@ public class Station {
 		this.postcode = postcode;
 	}
 
+	public String getLat() {
+		return lat;
+	}
+	public void setLat(String lat) {
+		this.lat = lat;
+	}
+	public String getLang() {
+		return lang;
+	}
+	public void setLang(String lang) {
+		this.lang = lang;
+	}
 	public Integer getSize() {
 		return size;
 	}
