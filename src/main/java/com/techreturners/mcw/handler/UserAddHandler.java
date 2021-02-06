@@ -31,6 +31,8 @@ public class UserAddHandler implements RequestHandler<APIGatewayProxyRequestEven
 	@Override
 	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent request, Context context) {
 		String userbody = request.getBody();
+		Boolean isAlert = false;
+		Long userId=Long.valueOf(0);  
 		ObjectMapper userObj = new ObjectMapper();
 		try {
 			User user = userObj.readValue(userbody, User.class);
@@ -54,6 +56,78 @@ public class UserAddHandler implements RequestHandler<APIGatewayProxyRequestEven
 			statement.setString(8, user.getEmail());
 			statement.setBoolean(9, user.getIsSubscriber());
 			statement.executeUpdate();
+			
+			statement = connection.prepareStatement("SELECT LAST_INSERT_ID() as id");
+			resultset = statement.executeQuery();
+			if (!resultset.next()) {
+			} else {
+				  userId=resultset.getLong("id");
+
+				LOG.debug("userId 2 is here  = ");
+				LOG.debug(userId);
+				
+
+			}
+			
+		/*	statement = connection.prepareStatement("SELECT MAX(user_id) AS id FROM user ");
+			resultset = statement.executeQuery();
+			if (!resultset.next()) {
+			} else {
+				 String  uuserId=resultset.getString("id");
+
+				LOG.debug("userId 1 is here  = ", uuserId);
+				LOG.debug(uuserId);
+
+			}
+			*/
+			
+			statement = connection.prepareStatement("Select * from shortage where iswatershortage='yes' and county_id=? ");
+			statement.setLong(1, user.getCountyId());
+			resultset = statement.executeQuery();
+			if (!resultset.next()) {
+			} else {
+				LOG.debug("isAlert=  ", isAlert);
+
+				isAlert = true;
+			}
+			
+			if(isAlert) {
+				
+				LOG.debug("if is alert is true ", isAlert);
+				query = " insert into alerts (user_id, alert_type,is_read, county_id)"
+						+ " values ( ?, ?, ?, ?)";
+				statement = connection.prepareStatement(query);
+				statement.setLong(1, userId);
+				statement.setString(2, "shortage");
+				statement.setBoolean(3,false);
+				statement.setLong(4, user.getCountyId());
+				statement.executeUpdate();
+			}
+			
+			isAlert=false;
+			statement = connection.prepareStatement("Select * from shortage where catid=7 and county_id=? ");
+			statement.setLong(1, user.getCountyId());
+			resultset = statement.executeQuery();
+			if (!resultset.next()) {
+			} else {
+				LOG.debug("isAlert=  ", isAlert);
+
+				isAlert = true;
+			}
+			
+			if(isAlert) {
+				
+				LOG.debug("if is alert is true ", isAlert);
+				query = " insert into alerts (user_id, alert_type,is_read, county_id)"
+						+ " values ( ?, ?, ?, ?)";
+				statement = connection.prepareStatement(query);
+				statement.setLong(1, userId);
+				statement.setString(2, "dirty");
+				statement.setBoolean(3,false);
+				statement.setLong(4, user.getCountyId());
+				statement.executeUpdate();
+			}
+
 			response.setStatusCode(200);
 			
 			Map<String, String> headers = new HashMap<>();

@@ -43,6 +43,8 @@ public class UserListHandler implements RequestHandler<APIGatewayProxyRequestEve
 						resultset.getString("first_name"), resultset.getString("last_name"),
 						resultset.getString("email"), resultset.getBoolean("is_active"),
 						resultset.getBoolean("is_subscriber"));
+				LOG.debug("firstname test  = ", resultset.getString("first_name"));
+
 				users.add(user);
 
 			}

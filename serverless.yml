@@ -250,6 +250,6 @@ functions:
     handler: com.techreturners.mcw.handler.ReadAlertHandler # Reference to class handler
     events: # Get the user list
       - http:
-          path: /read/alert/{userId}
+          path: /read/alert/{alertId}
           method: put
           cors: true # <-- CORS!

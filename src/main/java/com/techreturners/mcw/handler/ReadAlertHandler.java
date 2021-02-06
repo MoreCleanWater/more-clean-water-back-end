@@ -26,17 +26,17 @@ public class ReadAlertHandler implements RequestHandler<APIGatewayProxyRequestEv
 
 	@Override
 	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent request, Context context) {
-		String user_id = request.getPathParameters().get("userId");
+		String alert_id = request.getPathParameters().get("alertId");
 
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			connection = DriverManager
 					.getConnection(String.format("jdbc:mysql://%s/%s?user=%s&password=%s", System.getenv("DB_HOST"),
 							System.getenv("DB_NAME"), System.getenv("DB_USER"), System.getenv("DB_PASSWORD")));
-			String query = "update alerts set is_read= ? where user_id = ?";
+			String query = "update alerts set is_read= ? where alert_id = ?";
 			statement = connection.prepareStatement(query);
 			statement.setBoolean(1, true);
-			statement.setString(2, user_id);
+			statement.setString(2, alert_id);
 			statement.executeUpdate();
 			response.setStatusCode(200);
 
@@ -45,8 +45,8 @@ public class ReadAlertHandler implements RequestHandler<APIGatewayProxyRequestEv
 			headers.put("Access-Control-Allow-Credentials", "true");
 			response.setHeaders(headers);
 
-			LOG.debug("reading alerts for User = " + user_id);
-			LOG.info("User info=", user_id);
+			LOG.debug("reading alerts for User = " + alert_id);
+			LOG.info("User info=", alert_id);
 
 			response.setBody("Alert status is updated successfully");
 		} catch (Exception e) {
