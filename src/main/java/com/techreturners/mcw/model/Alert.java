@@ -3,13 +3,15 @@ package com.techreturners.mcw.model;
 public class Alert {
 	
 	private Long userId;
+	private Long alert_id;
 	private Integer countyId;
 	private String alertType;
 	private Boolean isRead;
 	public Alert() {}
 	
-	public Alert(String alertType, Boolean isRead) {
+	public Alert(Long alert_id,String alertType, Boolean isRead) {
 		super();
+		this.alert_id = alert_id;
 		this.alertType = alertType;
 		this.isRead = isRead;
 	}
@@ -37,6 +39,14 @@ public class Alert {
 	}
 	public void setIsRead(Boolean isRead) {
 		this.isRead = isRead;
+	}
+
+	public Long getAlert_id() {
+		return alert_id;
+	}
+
+	public void setAlert_id(Long alert_id) {
+		this.alert_id = alert_id;
 	}
 	
 	

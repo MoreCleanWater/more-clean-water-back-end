@@ -6,6 +6,7 @@ provider:
   runtime: java8
   region: eu-west-2
   profile: serverless
+  timeout: 15 # optional, in seconds, default is 6
   plugins:
    - serverless-iam-roles-per-function
   iamRoleStatements:

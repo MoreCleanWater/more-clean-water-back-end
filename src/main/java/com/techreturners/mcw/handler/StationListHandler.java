@@ -31,6 +31,8 @@ public class StationListHandler implements RequestHandler<APIGatewayProxyRequest
 	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent request, Context context) {
 		List<Station> stations = new ArrayList<>();
 		try {
+			LOG.debug(" Station List 1 = ");
+
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			connection = DriverManager
 					.getConnection(String.format("jdbc:mysql://%s/%s?user=%s&password=%s", System.getenv("DB_HOST"),
@@ -38,9 +40,14 @@ public class StationListHandler implements RequestHandler<APIGatewayProxyRequest
 
 			statement = connection
 					.prepareStatement("SELECT * FROM water_station w join postcode p on w.postcode=p.postcode");
+			LOG.debug(" Station List 2 = "+statement);
+
 			resultset = statement.executeQuery();
+			LOG.debug(" Station List 22 = ");
 
 			while (resultset.next()) {
+				LOG.debug(" Station List 3 = ");
+
 				Station water_stat = new Station(resultset.getInt("station_id"), resultset.getInt("county_id"),
 						resultset.getString("postcode"), resultset.getString("lat"), resultset.getString("lang"),
 						resultset.getInt("size"), resultset.getString("capacity"),
@@ -52,9 +59,11 @@ public class StationListHandler implements RequestHandler<APIGatewayProxyRequest
 		} finally {
 			closeConnection();
 		}
+		LOG.debug(" Station List 4 = ");
 
 		APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
 		response.setStatusCode(200);
+		LOG.debug(" Station List 5 = ");
 
 		Map<String, String> headers = new HashMap<>();
 		headers.put("Access-Control-Allow-Origin", "*");
@@ -64,6 +73,8 @@ public class StationListHandler implements RequestHandler<APIGatewayProxyRequest
 		ObjectMapper stationMapper = new ObjectMapper();
 
 		try {
+			LOG.debug(" Station List6 = ");
+
 			String stationList = stationMapper.writeValueAsString(stations);
 			response.setBody(stationList);
 		} catch (JsonProcessingException e) {

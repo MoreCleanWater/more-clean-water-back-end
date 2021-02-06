@@ -42,7 +42,7 @@ public class UserAlertHandler implements RequestHandler<APIGatewayProxyRequestEv
 			resultset = statement.executeQuery();
 
 			while (resultset.next()) {
-				Alert alert = new Alert(resultset.getString("alert_type"), resultset.getBoolean("is_read"));
+				Alert alert = new Alert(resultset.getLong("alert_id"),resultset.getString("alert_type"), resultset.getBoolean("is_read"));
 				alerts.add(alert);
 			}
 		} catch (Exception e) {
